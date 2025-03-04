@@ -3,16 +3,16 @@ class ldirectord::params {
   $http_download_location = 'http://horms.net/projects/ldirectord/download/ldirectord-latest'
 
   #Requires facter 1.6.1+
-  case $::osfamily {
+  case $::facts[os][family] {
     'RedHat': {
-      case $::operatingsystem {
+      case $::facts[os][name] {
         /^CentOS|RedHat/: {
           if $ldirectord::download_location == undef {
             #if centos5/6 use download link,
             #if Centos7 pull from files directory
-            if $::operatingsystemrelease =~ /^(5|6)/ {
+            if $::facts[os][release][major] =~ /^(5|6)/ {
               $download_location = $http_download_location
-            } elsif $::operatingsystemrelease =~ /^7/ {
+            } elsif $::facts[os][release][major] =~ /^7/ {
               $download_location = 'puppet:///modules/ldirectord/ldirectord.CentOS.7'
             }
           } else {
@@ -36,12 +36,12 @@ class ldirectord::params {
         default: {
           #Need to verify, Centos 5/6/7, Redhat 5/6/7
           #and Fedora down to the last supported version.
-          fail("Unsupported operatingsystem (${::operatingsystem})")
+          fail("Unsupported operatingsystem (${::facts[os][name]})")
         }
       }
     }
     'Debian': {
-      case $::operatingsystem {
+      case $::facts[os][name] {
         'Debian': {
           if $ldirectord::download_location == undef {
             #Debian has an ldirectord package,  make that default
@@ -65,12 +65,12 @@ class ldirectord::params {
           $curl_path         = '/usr/bin/curl'
         }
         default: {
-          fail("Unsupported operatingsystem (${::operatingsystem})")
+          fail("Unsupported operatingsystem (${::facts[os][name]})")
         }
       }
     }
     'Suse': {
-      case $::operatingsystem {
+      case $::facts[os][name] {
         'SLES': {
           if $ldirectord::download_location == undef {
             #Default is to pull from maintainer since there is no package
@@ -96,12 +96,12 @@ class ldirectord::params {
         default: {
           #Should probably remove sles,  the package is in HAE
           #the defualt install from the web gives errors
-          fail("Unsupported operatingsystem (${::operatingsystem})")
+          fail("Unsupported operatingsystem (${::facts[os][name]})")
         }
       }
     }
     default: {
-      fail("Unsupported osamily (${::osfamily})")
+      fail("Unsupported osamily (${::facts[os][family]})")
     }
   }
 }

@@ -1,10 +1,10 @@
 #Install modukle
 class ldirectord::install {
-  case $::osfamily {
+  case $::facts[os][family] {
     'RedHat': {
-      case $::operatingsystem {
+      case $::facts[os][name] {
         'CentOS': {
-          if $::operatingsystemrelease =~ /^7/ {
+          if $::facts[os][release][major] =~ /^7/ {
             if !defined(Package['perl-Sys-Syslog']) {
               package { 'perl-Sys-Syslog':
                 ensure => installed,
@@ -49,49 +49,49 @@ class ldirectord::install {
           #for now,  only use package,  will force the setting at a later date
           #in params.pp
           if  $ldirectord::params::download_location =~ /^(puppet|http)/ {
-            fail("Operating system (${::operatingsystem}) has a maintained package, installation from puppet/http not supported")
+            fail("Operating system (${::facts[os][name]}) has a maintained package, installation from puppet/http not supported")
           }
         }
         default: {
           #Should not be here because this was already covered in params.pp
-          fail("Unsupported operatingsystem (${::operatingsystem})")
+          fail("Unsupported operatingsystem (${::facts[os][name]})")
         }
       }
     }
     'Debian': {
-      case $::operatingsystem {
+      case $::facts[os][name] {
         'Debian': {
           if $ldirectord::params::download_location =~ /^(puppet|http)/ {
-            fail("Operating system (${::operatingsystem}) has a maintained pacakge, installation from puppet/http not supported")
+            fail("Operating system (${::facts[os][name]}) has a maintained pacakge, installation from puppet/http not supported")
           }
         }
         'Ubuntu': {
           if $ldirectord::params::download_location =~ /^(puppet|http)/ {
-            fail("Operating system (${::operatingsystem}) has a maintained pacakge, installation from puppet/http not supported")
+            fail("Operating system (${::facts[os][name]}) has a maintained pacakge, installation from puppet/http not supported")
           }
         }
         default: {
-          fail("Unsupported operatingsystem (${::operatingsystem})")
+          fail("Unsupported operatingsystem (${::facts[os][name]})")
         }
       }
     }
     'Suse': {
-      case $::operatingsystem {
+      case $::facts[os][name] {
         'SLES': {
-          fail("Operating system (${::operatingsystem}) not supported yet")
+          fail("Operating system (${::facts[os][name]}) not supported yet")
         }
         'OpenSuSE': {
           if $ldirectord::params::download_location =~ /^(puppet|http)/ {
-            fail("Operating system (${::operatingsystem}) has a maintained pacakge, installation from puppet/http not supported")
+            fail("Operating system (${::facts[os][name]}) has a maintained pacakge, installation from puppet/http not supported")
           }
         }
         default: {
-          fail("Unsupported operatingsystem (${::operatingsystem})")
+          fail("Unsupported operatingsystem (${::facts[os][name]})")
         }
       }
     }
     default: {
-      fail("Unsupported operatingsystem (${::osfamily})")
+      fail("Unsupported operatingsystem (${::facts[os][family]})")
     }
   }
 
